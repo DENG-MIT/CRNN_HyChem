@@ -13,6 +13,8 @@ using BSON: @save, @load
 using DelimitedFiles
 using Arrhenius
 
+ENV["GKSwstype"] = "100"
+
 if ispath("figs") == false
     mkdir("figs")
 end

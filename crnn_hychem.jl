@@ -1,6 +1,6 @@
 include("header.jl")
 
-is_restart = false;
+is_restart = true;
 n_epoch = 100000;
 ntotal = 20;
 batch_size = 8;
