@@ -82,17 +82,14 @@ end
 @time pred = predict_n_ode(p, 1; dense=false);
 
 @inbounds function loss_n_ode(p, i_exp, sample=ntotal; get_ind=false)
-    pred = clamp.(predict_n_ode(p, i_exp, sample), -ub, ub)[ind_obs, :]
+    pred = @views(clamp.(predict_n_ode(p, i_exp, sample), -ub, ub)[ind_obs, :])
     ind = size(pred)[2]
 
-    if minimum(pred[1, :]) < lb
-        ind = findfirst(pred[1, :] .< 10 * lb)
-        # elseif maximum(pred[1, :]) > 0.2
-        #     ind = findfirst(pred[1, :] .> 0.2)
+    if get_ind & (minimum(pred[1, :]) < lb)
+        ind = findfirst(pred[1, :] .< 2 * lb)
+        ind = maximum([2, ind])
     end
-    ind = maximum([2, ind])
-
-    pred = pred[:, 1:ind]
+    pred = @view(pred[:, 1:ind])
 
     ylabel = clamp.(@view(yall[i_exp, 4:end, 1:ind]), -ub, ub)
     # yscale_ = maximum(ylabel, dims=2) - minimum(ylabel, dims=2) .+ 1.e-6
