@@ -1,5 +1,4 @@
 using OrdinaryDiffEq, Flux, Plots
-using Optim
 using DiffEqSensitivity
 using ForwardDiff
 using Interpolations

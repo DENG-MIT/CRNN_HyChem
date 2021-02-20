@@ -1,7 +1,7 @@
 np = nr * (nse + 3) + 1;
 p = randn(Float64, np) .* 0.1 .- 0.05;
 p[end] = 0.1;  # slope
-function p2vec(p)
+@inbounds function p2vec(p)
     slope = p[end] .* 10.0
     w_b = p[1:nr] .* slope
     w_in_b = p[nr+1:nr*2]
@@ -21,7 +21,7 @@ function display_p(p)
     println("\n")
 end
 
-function crnn!(du, u, p, t)
+@inbounds function crnn!(du, u, p, t)
     T::typeof(u[1]) = itpT(t)
     P = itpP(t)
     Y = clamp.(u, -lb, 1.0)
@@ -45,7 +45,7 @@ prob = ODEProblem(crnn!, u0, tspan)
 
 ode_solver = TRBDF2();
 sense = ForwardDiffSensitivity()
-function predict_n_ode(p, i_exp, sample = ntotal; dense = false)
+@inbounds function predict_n_ode(p, i_exp, sample = ntotal; dense = false)
     global w_in, w_b, w_out = p2vec(p)
     ylabel = @view(yall[i_exp, :, :])
     ts = @view(ylabel[1, :])
@@ -75,7 +75,7 @@ function predict_n_ode(p, i_exp, sample = ntotal; dense = false)
 end
 @time pred = predict_n_ode(p, 1; dense = false);
 
-function loss_n_ode(p, i_exp, sample = ntotal; get_ind = false)
+@inbounds function loss_n_ode(p, i_exp, sample = ntotal; get_ind = false)
     pred = clamp.(predict_n_ode(p, i_exp, sample), -ub, ub)[ind_obs, :]
     ind = size(pred)[2]
 

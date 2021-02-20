@@ -3,7 +3,7 @@ include("header.jl")
 is_restart = false;
 n_epoch = 100000;
 ntotal = 20;
-batch_size = 16;
+batch_size = 8;
 n_plot = 1;
 grad_max = 10.0^(1);
 maxiters = 1000;

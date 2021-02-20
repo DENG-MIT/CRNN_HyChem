@@ -1,4 +1,4 @@
-gas = CreateSolution("./mechanism/JP10skeletal.yaml")
+gas = CreateSolution("./mechanism/JP10skeletal_core.yaml")
 const MW = gas.MW
 
 varnames = [

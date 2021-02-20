@@ -1,4 +1,4 @@
-cbi = function (p, i_exp)
+@inbounds cbi = function (p, i_exp)
     pred = predict_n_ode(p, i_exp)[ind_obs, :] .+ lb
     ts = @views(yall[i_exp, 1, :])[1:size(pred)[2]]
     ylabel = @views(yall[i_exp, 4:end, 1:size(pred)[2]])
@@ -22,7 +22,7 @@ end
 list_loss = [];
 list_grad = [];
 iter = 1;
-cb = function (p, loss_mean, g_norm; doplot=true)
+@inbounds cb = function (p, loss_mean, g_norm; doplot=true)
     global list_loss, list_grad, iter
     push!(list_loss, loss_mean)
     push!(list_grad, g_norm)
