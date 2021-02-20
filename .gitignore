@@ -1,0 +1,6 @@
+checkpoint
+figs
+__pycache__
+data
+*.docx
+*.xlsx
