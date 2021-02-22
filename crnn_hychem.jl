@@ -3,9 +3,9 @@ include("header.jl")
 is_restart = true;
 n_epoch = 100000;
 ntotal = 20;
-batch_size = 8;
-n_plot = 1;
-grad_max = 10.0^(1);
+batch_size = 16;
+n_plot = 2;
+grad_max = 10.0^(-1);
 maxiters = 1000;
 n_exp = 10;
 nr = 6;
@@ -26,7 +26,7 @@ for epoch in epochs
     global p
     for i_exp in randperm(n_exp)
         sample = rand(batch_size:ntotal)
-        loss_epoch[i_exp], ind = loss_n_ode(p, i_exp, ntotal; get_ind = true)
+        loss_epoch[i_exp], ind = loss_n_ode(p, i_exp, ntotal; get_ind=true)
         grad = ForwardDiff.gradient(
             x -> loss_n_ode(x, i_exp, minimum([ind, sample])),
             p,

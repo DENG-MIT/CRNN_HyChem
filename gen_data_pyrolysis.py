@@ -47,7 +47,7 @@ for i in range(nsamples):
         # sim.advance(time)
         sim.step()
 
-        if r.thermo.Y[gas.species_index('C10H16')] < Y_fuel_0 * 0.05:
+        if r.thermo.Y[gas.species_index('C10H16')] < Y_fuel_0 * 0.25:
             break
 
         # print('%10.3e %10.3f %10.3f %14.6e' % (sim.time, r.T,

@@ -1,8 +1,10 @@
 np = nr * (nse + 3) + 1;
 p = randn(Float64, np) .* 0.1 .- 0.05;
+p[1:nr] .= 0.1;  #lnA
+p[nr * 2 + 1:nr * 3] .= -0.1;  #Ea
 p[end] = 0.1;  # slope
 @inbounds function p2vec(p)
-    slope = p[end] .* 10.0
+    slope = p[end] .* 100.0
     w_b = p[1:nr] .* slope
     w_in_b = p[nr + 1:nr * 2]
     w_in_Ea = p[nr * 2 + 1:nr * 3] .* slope
@@ -40,7 +42,7 @@ display_p(p)
     S0 = get_S(gas, T, P, X)
     wdot = wdot_func(gas.reaction, T, C, S0, h_mole)
     crnn_in =
-        vcat(log.(clamp.(@view(C[ind_crnn]), 1.e-12, 10.0)), -1.0 / T, log(T))
+        vcat(log.(clamp.(@view(C[ind_crnn]), lb, 100.0)), -1.0 / T, log(T))
     wdot[ind_crnn] .+= w_out * exp.(w_in' * crnn_in + w_b)
     @. du = wdot * MW / ρ_mass
 end
