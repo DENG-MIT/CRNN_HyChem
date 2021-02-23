@@ -21,13 +21,6 @@ varnames = [
     "H2O",
 ];
 
-E_C = [10, 0, 0, 1, 1, 3, 2, 3, 5, 6, 7, 0, 0, 0, 0, 0, 0];
-E_H = [16, 1, 2, 3, 4, 5, 4, 6, 6, 6, 8, 1, 1, 2, 0, 0, 2];
-E_O = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 2, 1];
-E_ = hcat(E_C, E_H)[:, :];
-E_null = nullspace(E_')';
-nse = size(E_null)[1];
-
 varnames_obs = [
     "C10H16",
     "H2",
@@ -53,6 +46,10 @@ end
 
 ind_N2 = species_index(gas, "N2")
 ns = length(ind_obs);
+
+E_ = gas.ele_matrix[:, ind_crnn];
+E_null = nullspace(E_')';
+nse = size(E_null)[1];
 
 yall = zeros(n_exp, ns + 3, ntotal);
 for i_exp = 1:n_exp
