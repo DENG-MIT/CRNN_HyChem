@@ -63,7 +63,9 @@ for i_exp = 1:n_exp
     _ylabel = zeros(ns + 2, ntotal)
     for i = 1:ns+2
         itp = LinearInterpolation(ts, rawdata[i+1, :])
-        _ylabel[i, :] .= itp.(_ts)
+        ode_data = itp.(_ts)
+        _ylabel[i, :] .= clamp.(ode_data .+ 
+                                randn(size(ode_data)) .* ode_data .* noise, 0, Inf)
     end
 
     yall[i_exp, 1, :] .= _ts
