@@ -1,6 +1,6 @@
 np = nr * (nse + 3) + 1;
 p = randn(Float64, np) .* 0.1 .- 0.05;
-p[1:nr] .= 0.1;  #lnA
+p[1:nr] .= 0.8;  #lnA
 p[nr * 2 + 1:nr * 3] .= -0.1;  #Ea
 p[end] = 0.1;  # slope
 @inbounds function p2vec(p)

@@ -48,7 +48,7 @@ ind_N2 = species_index(gas, "N2")
 ns = length(ind_obs);
 
 E_ = gas.ele_matrix[:, ind_crnn];
-E_null = nullspace(E_')';
+E_null = nullspace(E_)';
 nse = size(E_null)[1];
 
 yall = zeros(n_exp, ns + 3, ntotal);
