@@ -1,7 +1,7 @@
-np = nr * (nse + 3) + 1;
+np = nr * (nse + ns + 3) + 1;
 p = randn(Float64, np) .* 0.1 .- 0.05;
-p[1:nr] .= 0.8;  #lnA
-p[nr * 2 + 1:nr * 3] .= -0.1;  #Ea
+p[1:nr] .+= 1.0;  #lnA
+p[nr * 2 + 1:nr * 3] .+= -0.1;  #Ea
 p[end] = 0.1;  # slope
 @inbounds function p2vec(p)
     slope = p[end] .* 100.0
@@ -9,8 +9,18 @@ p[end] = 0.1;  # slope
     w_in_b = p[nr + 1:nr * 2]
     w_in_Ea = p[nr * 2 + 1:nr * 3] .* slope
     w_out = E_null' * reshape(p[nr * 3 + 1:nr * (nse + 3)], nse, nr)
-    w_in = vcat(clamp.(-w_out, 0.0, 4.0), w_in_Ea', w_in_b')
+    
+    w_in = abs.(reshape(p[nr * (nse + 3)+1:end-1], ns, nr))
+    w_in = @. abs.(w_in) * clamp.(-w_out, 0.0, 20.0)
+    # w_out = - (w_out' ./ w_out[1, :])'
+
+    w_in = vcat(w_in, w_in_Ea', w_in_b')
     return w_in, w_b, w_out
+end
+
+w_in, w_b, w_out = p2vec(p)
+if maximum(w_out[1, :]) > 0.0
+    p[nr * 3 + 1:nr * (nse + 3)] .*= -1
 end
 
 function display_p(p)
@@ -22,9 +32,9 @@ function display_p(p)
     show(stdout, "text/plain", round.(hcat(w_out', w_in'[:, end - 1:end], w_b)', digits=2))
     # println("\n w_out")
     # show(stdout, "text/plain", round.(w_out', digits = 2))
-    println("\n w_nse")
-    w_e = reshape(p[nr * 3 + 1:nr * (nse + 3)], nse, nr)
-    show(stdout, "text/plain", round.(w_e, digits=2))
+    # println("\n w_nse")
+    # w_e = reshape(p[nr * 3 + 1:nr * (nse + 3)], nse, nr)
+    # show(stdout, "text/plain", round.(w_e, digits=2))
     println("\n")
 end
 display_p(p)
@@ -41,9 +51,9 @@ display_p(p)
     h_mole = get_H(gas, T, Y, X)
     S0 = get_S(gas, T, P, X)
     wdot = wdot_func(gas.reaction, T, C, S0, h_mole)
-    crnn_in =
-        vcat(log.(clamp.(@view(C[ind_crnn]), lb, 100.0)), -1.0 / T, log(T))
-    wdot[ind_crnn] .+= w_out * exp.(w_in' * crnn_in + w_b)
+    @fastmath crnn_in =
+        vcat(log.(clamp.(@view(C[ind_crnn]), lb, Inf)), -1.0 / T, log(T))
+    @fastmath wdot[ind_crnn] .+= w_out * exp.(w_in' * crnn_in + w_b)
     @. du = wdot * MW / ρ_mass
 end
 
@@ -94,8 +104,8 @@ end
     pred = @view(pred[:, 1:ind])
 
     ylabel = clamp.(@view(yall[i_exp, 4:end, 1:ind]), -ub, ub)
-    # yscale_ = maximum(ylabel, dims=2) - minimum(ylabel, dims=2) .+ 1.e-6
-    loss = mae(pred, ylabel)
+    yscale_ = maximum(ylabel, dims=2) - minimum(ylabel, dims=2) .+ 1.e-6
+    loss = mae(pred ./ yscale_, ylabel ./ yscale_) * loss_factor
 
     if get_ind
         return loss, ind

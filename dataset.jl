@@ -23,13 +23,20 @@ varnames = [
 
 varnames_obs = [
     "C10H16",
+    "H",
     "H2",
+    "CH3",
     "CH4",
+    "aC3H5",
     "C2H4",
     "C3H6",
     "C5H6",
     "C6H6",
     "C6H5CH3",
+    "OH",
+    "HO2",
+    "H2O2",
+    "O",
     "O2",
     "H2O",
 ]

@@ -1,16 +1,17 @@
 include("header.jl")
 
-is_restart = false;
+is_restart = true;
 n_epoch = 100000;
 ntotal = 20;
 batch_size = 16;
 n_plot = 2;
-grad_max = 10.0^(-1);
+grad_max = 10.0^(3);
 maxiters = 1000;
 n_exp = 10;
-noise = 0.01;
+noise = 0.001;
 nr = 6;
 opt = ADAMW(0.001, (0.9, 0.999), 1.e-6);
+loss_factor = 1.e0;
 atol = 1.e-8;
 rtol = 1.e-3;
 lb = atol;

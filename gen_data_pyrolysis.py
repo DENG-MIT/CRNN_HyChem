@@ -10,10 +10,26 @@ np.random.seed(1)
 
 gas = ct.Solution('../mech/JP10skeletal.cti')
 i_var = [gas.species_index(s) for s in [
-    "C10H16", "H2", "CH4", "C2H4", "C3H6", "C5H6", "C6H6", "C6H5CH3", "O2", "H2O"]]
+    "C10H16",
+    "H",
+    "H2",
+    "CH3",
+    "CH4",
+    "aC3H5",
+    "C2H4",
+    "C3H6",
+    "C5H6",
+    "C6H6",
+    "C6H5CH3",
+    "OH",
+    "HO2",
+    "H2O2",
+    "O",
+    "O2",
+    "H2O",]]
 
 lhs = Lhs(lhs_type="classic", criterion=None)
-space = Space([(1100., 1400.), (1., 5.), ('0', '1', '2')])
+space = Space([(1200., 1210.), (2., 2.1), ('0', '1', '2')])
 
 nsamples = 10
 x = lhs.generate(space.dimensions, nsamples)
@@ -25,8 +41,8 @@ x = lhs.generate(space.dimensions, nsamples)
 #         'C10H16:0.01,o2:0.007,h2o:0.1,n2:0.9']
 
 comp = ['C10H16:0.01,o2:0.014,h2o:0.1,n2:0.9',
-        'C10H16:0.01,o2:0.028,h2o:0.1,n2:0.9',
-        'C10H16:0.01,o2:0.007,h2o:0.1,n2:0.9']
+        'C10H16:0.01,o2:0.015,h2o:0.1,n2:0.9',
+        'C10H16:0.01,o2:0.016,h2o:0.1,n2:0.9']
 
 for i in range(nsamples):
 
